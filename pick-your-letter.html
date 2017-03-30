@@ -1,0 +1,34 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`pick-your-letter`
+come and pick your own letter
+
+@demo demo/index.html 
+-->
+
+<dom-module id="pick-your-letter">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]</h2>
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'pick-your-letter',
+
+      properties: {
+        prop1: {
+          type: String,
+          value: 'pick-your-letter',
+        },
+      },
+
+    });
+  </script>
+</dom-module>
