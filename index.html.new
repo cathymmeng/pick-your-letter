@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>ThoughtWorks Mail &#38; Parcel Tracker</title>
+    <meta name="description" content="mailMonitor description">
+    <link rel="manifest" href="/manifest.json">
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="elements.html">
+    <!-- <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/service-worker.js');
+      });
+    }
+    </script> -->
+
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+        background-image: linear-gradient(to bottom, rgb(0, 0, 0) 0%, rgb(50, 50, 50) 50%, rgb(0, 0, 0) 100%);
+        background-attachment: fixed;
+        font-family: 'Roboto', 'Noto', sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <mailMonitor-app></mailMonitor-app>
+    <mailMonitor-user-details></mailMonitor-user-details>
+  </body>
+</html>

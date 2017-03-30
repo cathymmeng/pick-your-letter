@@ -24,8 +24,20 @@
 
     <link rel="import" href="bower_components/polymer/polymer.html">
     <link rel="import" href="bower_components/pick-your-letter/pick-your-letter.html">
+
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+        background-image: linear-gradient(to bottom, rgb(0, 0, 0) 0%, rgb(50, 50, 50) 50%, rgb(0, 0, 0) 100%);
+        background-attachment: fixed;
+        font-family: 'Roboto', 'Noto', sans-serif;
+      }
+    </style>
   </head>
   <body unresolved>
-    <pick-your-letter></pick-your-letter>
+    <!-- <pick-your-letter></pick-your-letter> -->
+    <mailMonitor-app></mailMonitor-app>
+    <mailMonitor-user-details></mailMonitor-user-details>
   </body>
 </html>
