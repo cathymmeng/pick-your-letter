@@ -1,0 +1,25 @@
+{
+  "name": "pick-your-letter",
+  "description": "come and pick your own letter",
+  "main": "pick-your-letter.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/cathymmeng/pick-your-letter",
+  "_release": "cec2613458",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "cec2613458a4178bc1b583f7a26bd02dc6f22bd5"
+  },
+  "_source": "https://github.com/cathymmeng/pick-your-letter.git",
+  "_target": "*",
+  "_originalSource": "cathymmeng/pick-your-letter",
+  "_direct": true
+}
