@@ -55,12 +55,32 @@
           color: red;
         }
     </style>
-    <paper-input label="Name" value="{{name}}"></paper-input>
-    <paper-input label="Email [paper-input to gold-email-input?]" value="{{email}}"></paper-input>
+    <iron-ajax auto
+          url="{{url}}"
+          handle-as="json"
+          params='{"size":"500"}'
+          last-response="{{handleResponse}}"></iron-ajax>
+
+    <form is="iron-form" id="form" method="post" action="/edit">
+          <paper-dropdown-menu>
+              <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+                      <template is="dom-repeat" items="{{handleResponse}}">
+                        <paper-item value={{item.loginName}}>
+                          <!-- <a href="{{item.preferredName}}">{{item.preferredName}}</a> -->
+                          {{item.preferredName}}
+                        </paper-item>
+                      </template>
+              </paper-menu>
+          </paper-dropdown-menu>
+          <paper-input label="Email" id="email" value="[[selection]]@thoughtworks.com"></paper-input>
+    </form>
+    <!-- <paper-input label="Name" value="{{name}}"></paper-input>
+    <paper-input label="Email [paper-input to gold-email-input?]" value="{{email}}"></paper-input> -->
     <!-- <span class="validationError">[[validationError]]</span> -->
     <div class="align">
       <paper-radio-group selected="{{type}}">
         <paper-radio-button name="mail"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
+        <paper-radio-button name="magazine"><iron-icon icon="myicons:magazine"></iron-icon>Magazine</paper-radio-button>
         <paper-radio-button name="parcel"><iron-icon icon="myicons:parcel"></iron-icon>Parcel</paper-radio-button>
       </paper-radio-group>
 
@@ -104,6 +124,13 @@
             type: String,
             notify: true,
             value: ''
+          },
+          office: {
+            value: 'melbourne',
+            notify: true
+          },
+          url: {
+            computed: 'computeUrl(office)'
           }
         },
         observers: [
@@ -134,7 +161,11 @@
         },
         ready: function() {
           console.log('Element mailMonitor-user-details has been created.');
-        }
+        },
+        computeUrl: function(office){
+          // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
+          return ['./aus_',office,'_consultants.json'].join('');
+        },
       });
 
       function name2email(name) {
