@@ -58,30 +58,25 @@
 
       </form>
 
-<!-- //todo: -->
-<!-- //todo: tap send button will >> 1.validate email input isn't empty   -->
-<!-- //todo: tap send button will >> 2.send an email to the email input   -->
-<!-- //todo: tap send button will >> 3.add the input into JSON, thru local storage or not   -->
-
       <template is="dom-bind">
-        <iron-ajax url="../currentInventory.json" last-response="{{data}}" auto></iron-ajax>
-        <!-- <iron-localstorage id="storage" name="package-list"
+        <iron-ajax url="../data.json" last-response="{{data}}" auto></iron-ajax>
+        <iron-localstorage id="storage" name="package-list"
             value="{{data}}"
             on-iron-localstorage-load-empty="initializeDataSet">
-        </iron-localstorage> -->
+        </iron-localstorage>
         <div>
           <iron-data-table items="[[data]]">
             <data-table-column name="Receipient">
-              <template>[[item.receipient]]</template>
+              <template>[[item.name]]</template>
             </data-table-column>
             <data-table-column name="Date of Delivery">
               <template>[[item.dateOfDelivery]]</template>
             </data-table-column>
             <data-table-column name="Type">
-              <template>[[item.item.type]]</template>
+              <template>[[item.type]]</template>
             </data-table-column>
             <data-table-column name="Size">
-              <template>[[item.item.size]]</template>
+              <template>[[item.size]]</template>
             </data-table-column>
             <data-table-column name="Status">
               <template>[[item.status]]</template>
@@ -155,6 +150,9 @@
         ],
         _debug: function(a,b,c,d) {
           console.log('DEBUG: ', a,b,c,d)
+        },
+        _itemValue: function(item, prop) {
+          return item[prop];
         },
         _addNewRecord: function() {
           this.addNewRecordMode = true;

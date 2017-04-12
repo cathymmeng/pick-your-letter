@@ -43,7 +43,7 @@
       }
 
       .title {
-        font-size: 14px;
+        font-size: 16px;
         text-align: center;
         text-transform: uppercase;
         font-weight: 100;
@@ -87,7 +87,7 @@
         margin-right: auto;
       }
 
-      paper-card {
+      /*paper-card {
         width: 49.6%;
         vertical-align: top;
       }
@@ -95,7 +95,7 @@
       paper-card.full {
         width: 99.4%;
         margin-top: 20px;
-      }
+      }*/
 
       @media (max-width: 640px) {
         .title {
@@ -163,7 +163,7 @@
       </app-toolbar>
     </app-header>
 
-    <iron-pages id="pages"
+    <!-- <iron-pages id="pages"
         role="main"
         selected="[[routeData.page]]"
         selected-attribute="active"
@@ -171,37 +171,37 @@
         fallback-selection="console">
       <show-list-page name="show"
           subroute="[[subroute]]"></show-list-page>
-    </iron-pages>
+    </iron-pages> -->
 
   </template>
 
   <script>
-  (function(Polymer){
-    var DEFAULT_HEADING = '';
-    var DEFAULT_SUBTITLE = '';
+  // (function(Polymer){
+    // var DEFAULT_HEADING = '';
+    // var DEFAULT_SUBTITLE = '';
     Polymer({
 
       is: 'mailMonitor-head',
       properties: {
-        heading: { type:String, notify:true, value: DEFAULT_HEADING },
-        subtitle: { type:String, notify:true, value: DEFAULT_SUBTITLE }
+        // heading: { type:String, notify:true, value: DEFAULT_HEADING },
+        // subtitle: { type:String, notify:true, value: DEFAULT_SUBTITLE }
         },
-
-      listeners: {
-        'setup-toolbar': '_setupToolbar'
-      },
+      //
+      // listeners: {
+      //   'setup-toolbar': '_setupToolbar'
+      // },
 
 //sample tool bar code below - not in uses
-      _setupToolbar: function(e) {
-        this.$.leftItem.onclick = e.detail.leftItemClickAction;
-        if (e.detail.leftItemIcon) {
-          this.$.leftItem.setAttribute('icon', e.detail.leftItemIcon);
-        } else {
-          this.$.leftItem.removeAttribute('icon');
-        }
-      }
+      // _setupToolbar: function(e) {
+      //   this.$.leftItem.onclick = e.detail.leftItemClickAction;
+      //   if (e.detail.leftItemIcon) {
+      //     this.$.leftItem.setAttribute('icon', e.detail.leftItemIcon);
+      //   } else {
+      //     this.$.leftItem.removeAttribute('icon');
+      //   }
+      // }
 
     });
-  })(window.Polymer);
+  // })(window.Polymer);
   </script>
 </dom-module>
