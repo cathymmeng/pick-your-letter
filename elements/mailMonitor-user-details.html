@@ -17,7 +17,9 @@
         padding: 2px;
         width: 100%;
         display: inline-block;
-        border: solid red 1px;
+        border: solid red 2px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       div.align {
@@ -73,6 +75,11 @@
         paper-input {
           width: 50%;
         }
+
+        google-signin {
+          float: right;
+          color: red;
+        }
     </style>
     <iron-ajax auto
           url="{{url}}"
@@ -84,20 +91,18 @@
               <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
                       <template is="dom-repeat" items="{{handleResponse}}">
                         <paper-item value={{item.loginName}}>
-                          <!-- <a href="{{item.preferredName}}">{{item.preferredName}}</a> -->
                           [[item.preferredName]]
                         </paper-item>
                       </template>
               </paper-menu>
           </paper-dropdown-menu>
+          <iron-label><iron-icon icon="myicons:arrow-back"></iron-icon>recipient's name on the delivery</iron-label>
           <paper-input label="Email" id="email" value="[[email]]" disabled></paper-input>
     </form>
   </div>
-    <!-- <paper-input label="Name" value="{{name}}"></paper-input>
-    <span class="validationError">[[validationError]]</span> -->
     <div class="align">
       <paper-radio-group selected="{{type}}">
-        <paper-radio-button name="mail"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
+        <paper-radio-button name="letter"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
         <paper-radio-button name="magazine"><iron-icon icon="myicons:magazine"></iron-icon>Magazine</paper-radio-button>
         <paper-radio-button name="parcel"><iron-icon icon="myicons:parcel"></iron-icon>Parcel</paper-radio-button>
       </paper-radio-group>
@@ -109,7 +114,7 @@
           <paper-radio-button name="large"><iron-icon icon="myicons:computer-big"></iron-icon>Large</paper-radio-button>
         </paper-radio-group>
       </template>
-      <!-- There is some grief in the code below which I'll come back later -->
+      <!-- Quick and dirty code to be refactored -->
       <template is="dom-if" if="[[_hasEmail(email)]]">
         <paper-button raised on-tap="send" class="custom">Notify Owner</paper-button>
       </template>
@@ -123,7 +128,7 @@
           method="POST" url="https://www.googleapis.com/upload/gmail/v1/users/[[user.id]]/messages/send"
           content-type="message/rfc822"
           headers="[[_computeHeader(accessToken)]]"
-          body="[[_generateBody(email)]]"
+          body="[[_generateBody(email,type,size)]]"
           on-response="_sendEmailResponse"></iron-ajax>
 
     <google-signin id="login" label-signin="Sign In"
@@ -137,18 +142,9 @@
           on-google-signin-offline-success="_handleOffline"
           on-google-signin-aware-error="_signInError"></google-signin-aware>
 
-    <!-- paper-input label="To" value="[[selection]]@thoughtworks.com"></paper-input> -->
-    <!-- <paper-input label="From" value="{{from}}"></paper-input>
-    <paper-input label="Subject" value="{{subject}}"></paper-input>
-    <paper-input label="Body" value="{{body}}"></paper-input> -->
-    <div>
+    <!-- <div>
       <template is="dom-bind">
         <iron-ajax url="../currentInventory.json" last-response="{{data}}" auto></iron-ajax>
-        <!-- <iron-localstorage id="storage" name="package-list"
-            value="{{data}}"
-            on-iron-localstorage-load-empty="initializeDataSet">
-        </iron-localstorage> -->
-
           <iron-data-table items="[[data]]">
             <data-table-column name="Receipient">
               <template>[[item.receipient]]</template>
@@ -167,7 +163,7 @@
             </data-table-column>
           </iron-data-table>
       </template>
-    </div>
+    </div> -->
 
 </template>
   <script>
@@ -180,15 +176,11 @@
           name: {type:String, notify:true, value: ''},
           selection: {type:String, notify:true},
           email: {type: String, notify: true, computed: '_generateEmail(selection)'},
-          size: {type: String, notify: true, value: 'medium'},
-          type: {type: String, notify: true, value: 'mail'},
+          size: {type: String, notify: true, value: ''},
+          type: {type: String, notify: true, value: 'letter'},
           user: {type: Object, notify: true },
           accessToken: { type:String, notify:true },
           scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
-          // to: { type: String, notify: true, value: '' },
-          // from: { type: String, notify: true, value: 'THOUGHTWORKS MELBOURNE OFFICE' },
-          // subject: { type: String, notify: true, value: 'PLEASE COME AND PICK UP YOUR DELIVERY' },
-          // body: { type: String, notify: true, value: 'PLEASE COME AND PICK UP YOUR DELIVERY' },
           office: {value: 'melbourne', notify: true},
           url: {computed: '_computeUrl(office)'},
           // newRecord: {
@@ -219,9 +211,6 @@
         _generateEmail: function(selected) {
           return selected + '@thoughtworks.com';
         },
-        // _generateMyEmail: function(selected) {
-        //   this.email = selected + '@thoughtworks.com';
-        // },
         _isParcel: function(type) {
           return (type === 'parcel');
         },
@@ -229,9 +218,6 @@
         //   if (name !== undefined) {
         //     this.email = name2email(name);
         //   }
-        // },
-        // _sendEmail: function() {
-        //   this.$.emailer.send();
         // },
         _debug: function(object) {
           console.log(object);
@@ -249,12 +235,13 @@
         _sendEmailResponse: function(a) {
           console.log('EMAIL SENT RESPONSE: ', a);
         },
-        _generateBody: function(email) {
+        _generateBody: function(email,type,size) {
           var body = "to: " + email + "\n";
-          // var body = "to: cathym@thoughtworks.com\n";
-          body += "from: mengcx@gmail.com\n";
-          body += "subject: ===SUBJECT===\n\n";
-          body += "===BODY===\n";
+          body += "from: no-reply\n";
+          body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to Melbourne TW office\n\n";
+          body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";
+          body += "===TRIAL APP - PICK YOUR LETTER - DELIVERY MESSENGER===\n";
+          body += "Any suggestions please respond to Mads(PO)/Cathy, thanks all\n";
           console.log('------ EMAIL BODY: ', body);
           return body;
         },
@@ -285,8 +272,7 @@
           }, function(authorizationResult) {
             if (authorizationResult && !authorizationResult.error) {
               self.accessToken = authorizationResult.access_token;
-              console.log('-------------- ACCESS TOKEN: ', self.accessToken);
-              //self.$.send.generateRequest();
+              // console.log('-------------- ACCESS TOKEN: ', self.accessToken);
             }
           });
         },
@@ -302,24 +288,21 @@
         },
         debug: function(object) {
           console.log('DEBUG CMM-EMAILER: '. object);
-        },
-        ready: function() {
-          console.log('Element cmm-emailer has been created.');
         }
       });
 
-      // function name2email(name) {
-      //   if (name.trim().length == 0) { return '';
-      //   } else {
-      //     var parts = name.replace(' +',' ').split(' ');
-      //     var email = parts[0];
-      //     if (parts.length > 1 && parts[1].length > 0) {
-      //       email += '.' + parts[parts.length - 1].trim();
-      //     } else if (parts[0].trim().length > 0){
-      //       email = email + '@thoughtworks.com';
-      //     }
-      //   } return email;
-      // };
+      function name2email(name) {
+        if (name.trim().length == 0) { return '';
+        } else {
+          var parts = name.replace(' +',' ').split(' ');
+          var email = parts[0];
+          if (parts.length > 1 && parts[1].length > 0) {
+            email += '.' + parts[parts.length - 1].trim();
+          } else if (parts[0].trim().length > 0){
+            email = email + '@thoughtworks.com';
+          }
+        } return email;
+      };
 })(window.Polymer);
 </script>
 </dom-module>

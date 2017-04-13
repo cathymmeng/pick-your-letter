@@ -6,6 +6,7 @@
         padding-top: 64px;
         color: white;
         box-sizing: border-box;
+        background-image: "/images/parcelInOffice.png";
       }
 
       h1 {
@@ -21,8 +22,8 @@
       app-header {
         @apply(--layout-fixed-top);
         z-index: 1;
-        /*height: 64px;*/
-        /*line-height: 64px;*/
+        height: 64px;*/
+        line-height: 64px;
         background-color: rgba(0, 0, 0, 0.85);
         border-bottom: 1px solid #222;
         -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -50,8 +51,8 @@
         letter-spacing: 5px;
         word-spacing: 7px;
         display: inline;
-        margin-left: 0px;
-        margin-right: 100px;
+        /*margin-left: 0px;
+        margin-right: 100px;*/
         transition: opacity 0.2s;
         white-space: nowrap;
       }
@@ -87,16 +88,6 @@
         margin-right: auto;
       }
 
-      /*paper-card {
-        width: 49.6%;
-        vertical-align: top;
-      }
-
-      paper-card.full {
-        width: 99.4%;
-        margin-top: 20px;
-      }*/
-
       @media (max-width: 640px) {
         .title {
           font-size: 10px;
@@ -116,9 +107,8 @@
 
     <app-header condenses reveals threshold="1">
       <app-toolbar>
-        <!-- <paper-icon-button id="leftItem"></paper-icon-button> -->
         <a href="/" title="Letter &#38; Parcel Tracker">
-          <!-- svg logo -->
+          <!-- thoughtworks svg logo -->
           <?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <svg class="tw-logo" viewBox="0 0 568 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
