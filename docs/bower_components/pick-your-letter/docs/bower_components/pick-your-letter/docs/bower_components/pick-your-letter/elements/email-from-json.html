@@ -4,24 +4,58 @@
       <style>
       :host {
         display: block;
+        padding-top: 64px;
+        color: white;
         box-sizing: border-box;
       }
+
+      div {
+        width: 100%;
+        display: inline-block;
+      }
+
+      input {
+        color: white;
+      }
+
       </style>
-      <!-- <paper-input label="Cathy Todo" value="How to read JSON"></paper-input> -->
-        <iron-ajax auto
+      <style is="custom-style">
+          :root {
+            --paper-input-container-color: white;
+            --paper-input-container-focus-color: white;
+            --paper-input-container-input-color: white;
+
+            --paper-radio-button-unchecked-background-color: gray;
+            --paper-radio-button-unchecked-color: white;
+            --paper-radio-button-label-color: white;
+            }
+      </style>
+      <iron-ajax auto
             url="{{url}}"
             handle-as="json"
             params='{"size":"500"}'
             last-response="{{handleResponse}}"></iron-ajax>
 
-        <template is="dom-repeat" items="{{handleResponse}}">
-          <div>
-            <a href="{{item.loginName}}">{{item.preferredName}}</a>
-          </div>
-        </template>
+      <form is="iron-form" id="form" method="post" action="/edit">
+            <paper-dropdown-menu>
+                <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+                        <template is="dom-repeat" items="{{handleResponse}}">
+                          <paper-item value={{item.loginName}}>
+                            <!-- <a href="{{item.preferredName}}">{{item.preferredName}}</a> -->
+                            {{item.preferredName}}
+                          </paper-item>
+                        </template>
+                </paper-menu>
+            </paper-dropdown-menu>
+
+        <paper-input name="emailTranslate" label="Email" value="[[selection]]@thoughtworks.com"></paper-input>
+
+      </form>
+
     </template>
 
     <script>
+    (function(Polymer) {
       Polymer({
         is: "email-from-json",
         properties: {
@@ -34,13 +68,34 @@
           },
           url: {
             computed: 'computeUrl(office)'
+          },
+          email: {
+            type: String,
+            notify: true,
+            value: ''
+          },
+        },
+        observers: [
+          '_nameChanged(name)',
+        ],
+
+        _nameChanged: function(name) {
+          if (name !== undefined) {
+            this.email = name2email(name);
           }
         },
 
         computeUrl: function(office){
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
           return ['./aus_',office,'_consultants.json'].join('');
+        },
+      });
+
+        function name2email(name){
+          var email;
+          email = [[item.loginName]] + '@thoughtworks.com';
+          return email;
         }
-      })
+    })(window.Polymer);
     </script>
 </dom-module>
