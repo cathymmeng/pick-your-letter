@@ -80,13 +80,6 @@
         transform: translateX(129px) rotateZ(360deg);
       }
 
-      paper-material {
-        border: solid red 1px;
-        padding:10px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
       @media (max-width: 640px) {
         .title {
           font-size: 10px;
@@ -96,13 +89,6 @@
         }
       }
     </style>
-
-    <app-location route="{{route}}"></app-location>
-    <app-route
-        route="{{route}}"
-        pattern="/:page"
-        data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
 
     <app-header condenses reveals threshold="1">
       <app-toolbar>
@@ -172,24 +158,7 @@
 
       is: 'mailMonitor-head',
       properties: {
-        // heading: { type:String, notify:true, value: DEFAULT_HEADING },
-        // subtitle: { type:String, notify:true, value: DEFAULT_SUBTITLE }
         },
-      //
-      // listeners: {
-      //   'setup-toolbar': '_setupToolbar'
-      // },
-
-//sample tool bar code below - not in uses
-      // _setupToolbar: function(e) {
-      //   this.$.leftItem.onclick = e.detail.leftItemClickAction;
-      //   if (e.detail.leftItemIcon) {
-      //     this.$.leftItem.setAttribute('icon', e.detail.leftItemIcon);
-      //   } else {
-      //     this.$.leftItem.removeAttribute('icon');
-      //   }
-      // }
-
     });
   // })(window.Polymer);
   </script>

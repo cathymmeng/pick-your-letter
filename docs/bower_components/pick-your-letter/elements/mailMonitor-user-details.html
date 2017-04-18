@@ -3,34 +3,26 @@
     <style>
       :host {
         display: block;
-        padding:20px;
+        padding: 10px;
+        color: white;
+        box-sizing: border-box;
       }
 
-      paper-radio-group {
-        float:left;
-        border: dotted white 1px;
+      div {
+        padding: 2px;
+        width: 100%;
+        display: inline-block;
+        /*border: solid red 2px;*/
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
       }
 
       div.align {
-        float: left;
+        /*float: left;*/
         width: 100%;
         display: block 5px;
       }
-
-      /*div.center{
-        border:solid blue 1px;
-        width: 100%;
-        display: inline-block;
-      }
-
-      div.center > div { box-sizing: border-box;
-        border: solid red 2px;
-        margin-left: 50px;
-        margin-right: auto;
-        /*position: absolute;*/
-        /*width: 150px;
-        display: inline-block;
-      }*/
 
     </style>
     <style is="custom-style">
@@ -44,129 +36,268 @@
         --paper-radio-button-label-color: white;
         }
 
+        paper-card.full {
+          width: 99.4%;
+          margin-top: 20px;
+          box-sizing: border-box;
+          border: solid lightgray 1px;
+          background-color: rgba(0, 0, 0, 0.85);
+        }
+
+        paper-radio-group {
+          float:left;
+          border: dotted white 1px;
+        }
+
         paper-button.custom {
           color: white;
           clear:both;
           float:left;
-          border: solid white 1px;
+          border: solid red 1px;
           margin: 0px;
           margin-top: 10px;
         }
+
         span.validationError {
           float:left;
+          color: red;
+        }
+
+        paper-dropdown-menu {
+          width: 50%;
+        }
+
+        paper-input {
+          width: 50%;
+        }
+
+        google-signin {
+          float: right;
           color: red;
         }
     </style>
     <iron-ajax auto
           url="{{url}}"
           handle-as="json"
-          params='{"size":"500"}'
           last-response="{{handleResponse}}"></iron-ajax>
+    <paper-material elevation="1">
+      <paper-card class="full">
+        <form is="iron-form" id="form" method="post" action="/edit">
+              <paper-dropdown-menu>
+                  <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+                          <template is="dom-repeat" items="{{handleResponse}}">
+                            <paper-item value={{item}}>
+                              [[item.preferredName]]
+                            </paper-item>
+                          </template>
+                  </paper-menu>
+              </paper-dropdown-menu>
+              <iron-label><iron-icon icon="myicons:arrow-back"></iron-icon>recipient's name on the delivery</iron-label>
 
-    <form is="iron-form" id="form" method="post" action="/edit">
-          <paper-dropdown-menu>
-              <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
-                      <template is="dom-repeat" items="{{handleResponse}}">
-                        <paper-item value={{item.loginName}}>
-                          <!-- <a href="{{item.preferredName}}">{{item.preferredName}}</a> -->
-                          {{item.preferredName}}
-                        </paper-item>
-                      </template>
-              </paper-menu>
-          </paper-dropdown-menu>
-          <paper-input label="Email" id="email" value="[[selection]]@thoughtworks.com"></paper-input>
-    </form>
-    <!-- <paper-input label="Name" value="{{name}}"></paper-input>
-    <span class="validationError">[[validationError]]</span> -->
-    <div class="align">
-      <paper-radio-group selected="{{type}}">
-        <paper-radio-button name="mail"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
-        <paper-radio-button name="magazine"><iron-icon icon="myicons:magazine"></iron-icon>Magazine</paper-radio-button>
-        <paper-radio-button name="parcel"><iron-icon icon="myicons:parcel"></iron-icon>Parcel</paper-radio-button>
-      </paper-radio-group>
+              <paper-input label="Email" id="email" value="[[email]]" disabled></paper-input>
+              <paper-input label="Working Office" value="[[workingOffice]]" disabled></paper-input>
+              <paper-input label="Home Office" value="[[homeOffice]]" disabled></paper-input>
 
-      <template is="dom-if" if="{{_isParcel(type)}}" restamp="true">
-        <paper-radio-group selected="{{size}}">
-          <paper-radio-button name="small"><iron-icon icon="myicons:phone-small"></iron-icon>Small</paper-radio-button>
-          <paper-radio-button name="medium"><iron-icon icon="myicons:tablet-medium"></iron-icon>Medium</paper-radio-button>
-          <paper-radio-button name="large"><iron-icon icon="myicons:computer-big"></iron-icon>Large</paper-radio-button>
-        </paper-radio-group>
+        </form>
+
+        <div class="align">
+          <paper-radio-group selected="{{type}}">
+            <paper-radio-button name="letter"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
+            <paper-radio-button name="magazine"><iron-icon icon="myicons:magazine"></iron-icon>Magazine</paper-radio-button>
+            <paper-radio-button name="parcel"><iron-icon icon="myicons:parcel"></iron-icon>Parcel</paper-radio-button>
+          </paper-radio-group>
+
+        <template is="dom-if" if="{{_isParcel(type)}}" restamp="true">
+          <paper-radio-group selected="{{size}}">
+            <paper-radio-button name="small"><iron-icon icon="myicons:phone-small"></iron-icon>Small</paper-radio-button>
+            <paper-radio-button name="medium"><iron-icon icon="myicons:tablet-medium"></iron-icon>Medium</paper-radio-button>
+            <paper-radio-button name="large"><iron-icon icon="myicons:computer-big"></iron-icon>Large</paper-radio-button>
+          </paper-radio-group>
+        </template>
+        <!-- Quick and dirty code to be refactored -->
+        <template is="dom-if" if="[[_hasEmail(email)]]">
+          <paper-button raised on-tap="send" class="custom">Notify Owner</paper-button>
+        </template>
+        <template is="dom-if" if="[[_hasNoEmail(email)]]">
+          <paper-button raised on-tap="send" class="custom" disabled>Notify Owner</paper-button>
+        </template>
+        <!-- <paper-button raised on-tap="_insertRecordAndSend" class="custom"><iron-icon icon="myicons:send-mail"></iron-icon>Send An Email</paper-button> -->
+      </div>
+    </paper-card>
+
+    <iron-ajax id="send"
+          method="POST" url="https://www.googleapis.com/upload/gmail/v1/users/[[user.id]]/messages/send"
+          content-type="message/rfc822"
+          headers="[[_computeHeader(accessToken)]]"
+          body="[[_generateBody(email,type,size)]]"
+          on-response="_sendEmailResponse"></iron-ajax>
+
+    <google-signin id="login" label-signin="Sign In"
+          client-id="795758326945-b9uk1r5iuj2rv3u2jdgcr5v1ksvl2ngh.apps.googleusercontent.com"
+          on-google-signed-out="_handleSignout"
+          scopes="[[scopes]]"></google-signin>
+
+    <google-signin-aware
+          scopes="[[scopes]]"
+          on-google-signin-aware-success="_handleSignin"
+          on-google-signin-offline-success="_handleOffline"
+          on-google-signin-aware-error="_signInError"></google-signin-aware>
+
+    <!-- <div>
+      <template is="dom-bind">
+        <iron-ajax url="../currentInventory.json" last-response="{{data}}" auto></iron-ajax>
+          <iron-data-table items="[[data]]">
+            <data-table-column name="Receipient">
+              <template>[[item.receipient]]</template>
+            </data-table-column>
+            <data-table-column name="Date of Delivery">
+              <template>[[item.dateOfDelivery]]</template>
+            </data-table-column>
+            <data-table-column name="Type">
+              <template>[[item.item.type]]</template>
+            </data-table-column>
+            <data-table-column name="Size">
+              <template>[[item.item.size]]</template>
+            </data-table-column>
+            <data-table-column name="Status">
+              <template>[[item.status]]</template>
+            </data-table-column>
+          </iron-data-table>
       </template>
-    </div>
-      <paper-button raised on-tap="_send" class="custom"><iron-icon icon="myicons:email"></iron-icon>Send</paper-button>
-  </template>
+    </div> -->
 
+</template>
   <script>
     (function(Polymer) {
+      const clientId = '795758326945-b9uk1r5iuj2rv3u2jdgcr5v1ksvl2ngh.apps.googleusercontent.com';
+
       Polymer({
         is: 'mailMonitor-user-details',
         properties: {
-          name: {
-            type:String,
-            notify:true,
-            value: ''
-          },
-          email: {
-            type: String,
-            notify: true,
-            value: ''
-          },
-          size: {
-            type: String,
-            notify: true,
-            value: 'medium'
-          },
-          type: {
-            type: String,
-            notify: true,
-            value: 'mail'
-          },
-          validationError: {
-            type: String,
-            notify: true,
-            value: ''
-          },
-          office: {
-            value: 'melbourne',
-            notify: true
-          },
-          url: {
-            computed: 'computeUrl(office)'
-          }
+          name: {type:String, notify:true, value: ''},
+          selection: {type:String, notify:true},
+          email: {type: String, notify: true, computed: '_generateEmail(selection)'},
+          workingOffice: {type: String, notify: true, computed: '_getWorkingOffice(selection)'},
+          homeOffice: {type: String, notify: true, computed: '_getHomeOffice(selection)'},
+          size: {type: String, notify: true, value: ''},
+          type: {type: String, notify: true, value: 'letter'},
+          user: {type: Object, notify: true },
+          accessToken: { type:String, notify:true },
+          scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
+          office: {value: 'melbourne', notify: true},
+          url: {computed: '_computeUrl(office)'},
+          // newRecord: {
+          //   type: Object,
+          //   notify: true,
+          //   value:   {
+          //       "receipient": "",
+          //       "dateOfDelivery": "",
+          //       "item": {
+          //         "type": "",
+          //         "size": ""
+          //       },
+          //       "status": "Notified"
+          //     }
+          //   }
         },
         observers: [
           '_debug(size)',
-          '_nameChanged(name)',
-          '_emailValidation(email)'
+          '_debug(user)',
+          // '_nameChanged(name)',
         ],
-
-        _emailValidation: function(email) {
-          console.log('EMAIL: ', email);
-            var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            return re.test(email);
-            // this.validationError = ' stuff';
+        _hasEmail: function(email) {
+          return (email !== undefined && email !== '');
         },
-        _send: function() {
-          console.log('Sending email to: ' + this.email);
+        _hasNoEmail: function(email) {
+          return (email === undefined || email === '');
+        },
+        _generateEmail: function(selected) {
+          return selected.loginName + '@thoughtworks.com';
+        },
+        _getWorkingOffice: function(selected) {
+          return selected.workingOffice.name;
+        },
+        _getHomeOffice: function(selected) {
+          return selected.homeOffice.name;
         },
         _isParcel: function(type) {
           return (type === 'parcel');
         },
-        _nameChanged: function(name) {
-          if (name !== undefined) {
-            this.email = name2email(name);
-          }
-        },
+        // _nameChanged: function(name) {
+        //   if (name !== undefined) {
+        //     this.email = name2email(name);
+        //   }
+        // },
         _debug: function(object) {
           console.log(object);
         },
-        ready: function() {
-          console.log('Element mailMonitor-user-details has been created.');
-        },
-        computeUrl: function(office){
+        _computeUrl: function(office){
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
           return ['./aus_',office,'_consultants.json'].join('');
         },
+        send: function() {
+          this.$.send.generateRequest();
+        },
+        _computeHeader: function(accessToken) {
+          return {'Authorization': 'Bearer ' + accessToken}
+        },
+        _sendEmailResponse: function(a) {
+          console.log('EMAIL SENT RESPONSE: ', a);
+        },
+        _generateBody: function(email,type,size) {
+          var body = "to: " + email + "\n";
+          body += "from: no-reply\n";
+          body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to Melbourne TW office\n\n";
+          body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";
+          body += "===TRIAL APP - PICK YOUR LETTER - DELIVERY MESSENGER===\n";
+          body += "Any suggestions please respond to Mads(PO)/Cathy, thanks all\n";
+          console.log('------ EMAIL BODY: ', body);
+          return body;
+        },
+        _handleSignin: function(response) {
+          var currentUser = gapi.auth2.getAuthInstance()['currentUser'].get();
+          var profile = currentUser.getBasicProfile();
+          var username = profile.getName();
+          var userid = profile.getId();
+          var coverImage = this.user && this.user.cover ? this.user.cover : null;
+
+          const user = {
+            id: profile.getId(),
+            name: profile.getName(),
+            profile: profile.getImageUrl(),
+            email: profile.getEmail(),
+            cover: coverImage
+          }
+          console.log('USER NAME: ' + name);
+          console.log('USER ID: ' + userid);
+          console.log('USER EMAIL:' + user.email)
+          this.set('user', user);
+
+          const self = this;
+          gapi.auth2.authorize({
+            client_id: clientId,
+            scope: self.scopes,
+            immediate: false
+          }, function(authorizationResult) {
+            if (authorizationResult && !authorizationResult.error) {
+              self.accessToken = authorizationResult.access_token;
+              // console.log('-------------- ACCESS TOKEN: ', self.accessToken);
+            }
+          });
+        },
+        _handleSignout: function(response) {
+          console.log('Signed out: ', response);
+          this.set('user', undefined);
+        },
+        _handleOffline: function(response) {
+          console.log('Offline code received: ' + response.detail.code);
+        },
+        _signInError: function(a) {
+          console.log('SIGN IN ERROR: ', a);
+        },
+        debug: function(object) {
+          console.log('DEBUG CMM-EMAILER: '. object);
+        }
       });
 
       function name2email(name) {
@@ -180,8 +311,7 @@
             email = email + '@thoughtworks.com';
           }
         } return email;
-      }
-
-    })(window.Polymer);
-  </script>
+      };
+})(window.Polymer);
+</script>
 </dom-module>
