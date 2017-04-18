@@ -12,7 +12,9 @@
       }
 
       div.align {
+        float: left;
         width: 100%;
+        display: block 5px;
       }
 
       /*div.center{
@@ -75,8 +77,7 @@
           <paper-input label="Email" id="email" value="[[selection]]@thoughtworks.com"></paper-input>
     </form>
     <!-- <paper-input label="Name" value="{{name}}"></paper-input>
-    <paper-input label="Email [paper-input to gold-email-input?]" value="{{email}}"></paper-input> -->
-    <!-- <span class="validationError">[[validationError]]</span> -->
+    <span class="validationError">[[validationError]]</span> -->
     <div class="align">
       <paper-radio-group selected="{{type}}">
         <paper-radio-button name="mail"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
@@ -169,27 +170,16 @@
       });
 
       function name2email(name) {
-        // return empty email if we don't have a name yet
-        if (name.trim().length === 0) {
-          return '';
-        }
-
-        var parts = name.replace(' +',' ').split(' ');
-
-        // set the first name part of the email
-        var email = parts[0];
-
-        // set the second name in the email if there is one
-        if (parts.length > 1 && parts[1].length > 0) {
-          email += '.' + parts[parts.length - 1].trim();
-        };
-
-        // add the hostname if there is a email
-        if (parts[0].trim().length > 0){
-          email = email + '@thoughtworks.com';
-        }
-
-        return email;
+        if (name.trim().length == 0) { return '';
+        } else {
+          var parts = name.replace(' +',' ').split(' ');
+          var email = parts[0];
+          if (parts.length > 1 && parts[1].length > 0) {
+            email += '.' + parts[parts.length - 1].trim();
+          } else if (parts[0].trim().length > 0){
+            email = email + '@thoughtworks.com';
+          }
+        } return email;
       }
 
     })(window.Polymer);

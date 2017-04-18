@@ -22,11 +22,11 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
   "homepage": "https://github.com/cathymmeng/pick-your-letter",
-  "_release": "839bf026ee",
+  "_release": "75e3f37414",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "839bf026ee74ff6444951d781d6ba51aaed33ea1"
+    "commit": "75e3f37414798c0778408b8a201e718764932e89"
   },
   "_source": "https://github.com/cathymmeng/pick-your-letter.git",
   "_target": "*",

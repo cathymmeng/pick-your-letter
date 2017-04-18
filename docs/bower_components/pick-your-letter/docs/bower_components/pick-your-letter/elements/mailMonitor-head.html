@@ -21,8 +21,8 @@
       app-header {
         @apply(--layout-fixed-top);
         z-index: 1;
-        /*height: 64px;*/
-        /*line-height: 64px;*/
+        height: 64px;*/
+        line-height: 64px;
         background-color: rgba(0, 0, 0, 0.85);
         border-bottom: 1px solid #222;
         -webkit-backdrop-filter: saturate(180%) blur(20px);
@@ -43,15 +43,15 @@
       }
 
       .title {
-        font-size: 14px;
+        font-size: 16px;
         text-align: center;
         text-transform: uppercase;
         font-weight: 100;
         letter-spacing: 5px;
         word-spacing: 7px;
         display: inline;
-        margin-left: 0px;
-        margin-right: 100px;
+        /*margin-left: 0px;
+        margin-right: 100px;*/
         transition: opacity 0.2s;
         white-space: nowrap;
       }
@@ -87,16 +87,6 @@
         margin-right: auto;
       }
 
-      paper-card {
-        width: 49.6%;
-        vertical-align: top;
-      }
-
-      paper-card.full {
-        width: 99.4%;
-        margin-top: 20px;
-      }
-
       @media (max-width: 640px) {
         .title {
           font-size: 10px;
@@ -116,9 +106,8 @@
 
     <app-header condenses reveals threshold="1">
       <app-toolbar>
-        <!-- <paper-icon-button id="leftItem"></paper-icon-button> -->
         <a href="/" title="Letter &#38; Parcel Tracker">
-          <!-- svg logo -->
+          <!-- thoughtworks svg logo -->
           <?xml version="1.0" encoding="UTF-8" standalone="no"?>
           <svg class="tw-logo" viewBox="0 0 568 100" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -163,7 +152,7 @@
       </app-toolbar>
     </app-header>
 
-    <iron-pages id="pages"
+    <!-- <iron-pages id="pages"
         role="main"
         selected="[[routeData.page]]"
         selected-attribute="active"
@@ -171,37 +160,37 @@
         fallback-selection="console">
       <show-list-page name="show"
           subroute="[[subroute]]"></show-list-page>
-    </iron-pages>
+    </iron-pages> -->
 
   </template>
 
   <script>
-  (function(Polymer){
-    var DEFAULT_HEADING = '';
-    var DEFAULT_SUBTITLE = '';
+  // (function(Polymer){
+    // var DEFAULT_HEADING = '';
+    // var DEFAULT_SUBTITLE = '';
     Polymer({
 
       is: 'mailMonitor-head',
       properties: {
-        heading: { type:String, notify:true, value: DEFAULT_HEADING },
-        subtitle: { type:String, notify:true, value: DEFAULT_SUBTITLE }
+        // heading: { type:String, notify:true, value: DEFAULT_HEADING },
+        // subtitle: { type:String, notify:true, value: DEFAULT_SUBTITLE }
         },
-
-      listeners: {
-        'setup-toolbar': '_setupToolbar'
-      },
+      //
+      // listeners: {
+      //   'setup-toolbar': '_setupToolbar'
+      // },
 
 //sample tool bar code below - not in uses
-      _setupToolbar: function(e) {
-        this.$.leftItem.onclick = e.detail.leftItemClickAction;
-        if (e.detail.leftItemIcon) {
-          this.$.leftItem.setAttribute('icon', e.detail.leftItemIcon);
-        } else {
-          this.$.leftItem.removeAttribute('icon');
-        }
-      }
+      // _setupToolbar: function(e) {
+      //   this.$.leftItem.onclick = e.detail.leftItemClickAction;
+      //   if (e.detail.leftItemIcon) {
+      //     this.$.leftItem.setAttribute('icon', e.detail.leftItemIcon);
+      //   } else {
+      //     this.$.leftItem.removeAttribute('icon');
+      //   }
+      // }
 
     });
-  })(window.Polymer);
+  // })(window.Polymer);
   </script>
 </dom-module>

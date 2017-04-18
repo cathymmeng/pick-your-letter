@@ -32,7 +32,7 @@
           width: 99.4%;
           margin-top: 20px;
           box-sizing: border-box;
-          border: solid lightgray 1px;
+          border: solid lightgray 5px;
           background-color: inherit;
         }
 
@@ -75,6 +75,7 @@
           padding: 15px;
           float: right;
           color: red;
+          padding-bottom: 15px;
         }
     </style>
     <iron-ajax auto
@@ -82,7 +83,7 @@
           handle-as="json"
           last-response="{{handleResponse}}"></iron-ajax>
     <paper-material elevation="1">
-      <paper-card class="full">
+      <paper-card class="full" image="/elements/images/parcelInOffice.png">
         <form is="iron-form" id="form" method="post" action="/edit">
               <paper-dropdown-menu>
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
@@ -249,7 +250,6 @@
         },
         _generateBody: function(email,type,size) {
           var body = "to: " + email + "\n";
-          body += "from: no-reply\n";
           body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to Melbourne TW office\n\n";
           body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";
           body += "===TRIAL APP - Letter & Parcel DELIVERY MESSENGER===\n";

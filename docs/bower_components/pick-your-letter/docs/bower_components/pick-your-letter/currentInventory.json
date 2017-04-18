@@ -1,0 +1,20 @@
+[
+  {
+    "receipient": "Cathy Meng",
+    "dateOfDelivery": "05/04/2017",
+    "item": {
+      "type": "letter",
+      "size": ""
+    },
+    "status": "Notified"
+  },
+  {
+    "receipient": "Cathy Meng",
+    "dateOfDelivery": "05/04/2017",
+    "item": {
+      "type": "parcel",
+      "size": "big"
+    },
+    "status": "Notified"
+  }
+]
