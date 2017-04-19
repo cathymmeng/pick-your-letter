@@ -43191,15 +43191,15 @@ is resolved. Local storage will be blown away.
           padding-bottom: 15px;
         }
     </style>
-    <!-- <iron-ajax auto
+    <iron-ajax auto
           url="{{url}}"
           handle-as="json"
-          last-response="{{handleResponse}}"></iron-ajax> -->
+          last-response="{{handleResponse}}"></iron-ajax>
     <iron-localstorage id="storage" name="consultants" value="{{handleResponse}}">
     </iron-localstorage>
     <paper-material elevation="1">
       <paper-card class="full">
-        <img src="parcelInOffice.png" width="100%" height="160" <form="" is="iron-form" id="form" method="post" action="/edit">
+        <img src="./parcelInOffice.png" width="100%" height="160" <form="" is="iron-form" id="form" method="post" action="/edit">
               <paper-dropdown-menu>
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
                           <template is="dom-repeat" items="{{handleResponse}}">
