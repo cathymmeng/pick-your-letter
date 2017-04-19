@@ -43191,10 +43191,7 @@ is resolved. Local storage will be blown away.
           padding-bottom: 15px;
         }
     </style>
-    <iron-ajax auto
-          url="{{url}}"
-          handle-as="json"
-          last-response="{{handleResponse}}"></iron-ajax>
+
     <iron-localstorage id="storage" name="consultants" value="{{handleResponse}}">
     </iron-localstorage>
     <paper-material elevation="1">
