@@ -7,14 +7,14 @@
     <link rel="manifest" href="/manifest.json">
     <script>/**
  * @license
- * Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+ * Copyright (c) 2017 Thoughtworks Parcel Messenger Author. All rights reserved.
  * This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
  * The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
  * The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
  * Code distributed by Google as part of the polymer project is also
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
-// @version 0.7.24
+// Polymer @version 0.7.24
 (function() {
   window.WebComponents = window.WebComponents || {
     flags: {}
@@ -2520,7 +2520,7 @@ window.CustomElements.addModule(function(scope) {
     </script> -->
 
     </head>
-  <body unresolved=""><div hidden="" by-vulcanize=""><!--
+  <body unresolved="" onload="setTimeout(function() {window.scrollTo(0, 1)}, 100)"><div hidden="" by-vulcanize=""><!--
 @license
 Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
 This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
@@ -42853,6 +42853,254 @@ any apps you're building. See the Google Developers Console
     });
   }());
 </script>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+--><!--
+Element access to Web Storage API (window.localStorage).
+
+Keeps `value` property in sync with localStorage.
+
+Value is saved as json by default.
+
+### Usage:
+
+`ls-sample` will automatically save changes to its value.
+
+    <dom-module id="ls-sample">
+      <iron-localstorage name="my-app-storage"
+        value="{{cartoon}}"
+        on-iron-localstorage-load-empty="initializeDefaultCartoon"
+      ></iron-localstorage>
+    </dom-module>
+
+    <script>
+      Polymer({
+        is: 'ls-sample',
+        properties: {
+          cartoon: {
+            type: Object
+          }
+        },
+        // initializes default if nothing has been stored
+        initializeDefaultCartoon: function() {
+          this.cartoon = {
+            name: "Mickey",
+            hasEars: true
+          }
+        },
+        // use path set api to propagate changes to localstorage
+        makeModifications: function() {
+          this.set('cartoon.name', "Minions");
+          this.set('cartoon.hasEars', false);
+        }
+      });
+    </script>
+
+### Tech notes:
+
+* * `value.*` is observed, and saved on modifications. You must use
+    path change notification methods such as `set()` to modify value
+    for changes to be observed.
+
+* * Set `auto-save-disabled` to prevent automatic saving.
+
+* * Value is saved as JSON by default.
+
+* * To delete a key, set value to null
+
+* Element listens to StorageAPI `storage` event, and will reload upon receiving it.
+
+* **Warning**: do not bind value to sub-properties until Polymer
+[bug 1550](https://github.com/Polymer/polymer/issues/1550)
+is resolved. Local storage will be blown away.
+`<iron-localstorage value="{{foo.bar}}"` will cause **data loss**.
+
+@demo demo/index.html
+@hero hero.svg
+-->
+<dom-module id="iron-localstorage" assetpath="/bower_components/iron-localstorage/"></dom-module>
+<script>
+
+  Polymer({
+    is: 'iron-localstorage',
+
+    properties: {
+      /**
+       * localStorage item key
+       */
+      name: {
+        type: String,
+        value: ''
+      },
+      /**
+       * The data associated with this storage.
+       * If set to null item will be deleted.
+       * @type {*}
+       */
+      value: {
+        type: Object,
+        notify: true
+      },
+
+      /**
+       * If true: do not convert value to JSON on save/load
+       */
+      useRaw: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Value will not be saved automatically if true. You'll have to do it manually with `save()`
+       */
+      autoSaveDisabled: {
+        type: Boolean,
+        value: false
+      },
+      /**
+       * Last error encountered while saving/loading items
+       */
+      errorMessage: {
+        type: String,
+        notify: true
+      },
+
+      /** True if value has been loaded */
+      _loaded: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    observers: [
+      '_debounceReload(name,useRaw)',
+      '_trySaveValue(autoSaveDisabled)',
+      '_trySaveValue(value.*)'
+    ],
+
+    ready: function() {
+      this._boundHandleStorage = this._handleStorage.bind(this);
+    },
+
+    attached: function() {
+      window.addEventListener('storage', this._boundHandleStorage);
+    },
+
+    detached: function() {
+      window.removeEventListener('storage', this._boundHandleStorage);
+    },
+
+    _handleStorage: function(ev) {
+      if (ev.key == this.name) {
+        this._load(true);
+      }
+    },
+
+    _trySaveValue: function() {
+      if (this._doNotSave) {
+        return;
+      }
+      if (this._loaded && !this.autoSaveDisabled) {
+        this.debounce('save', this.save);
+      }
+    },
+
+    _debounceReload: function() {
+      this.debounce('reload', this.reload);
+    },
+
+    /**
+     * Loads the value again. Use if you modify
+     * localStorage using DOM calls, and want to
+     * keep this element in sync.
+     */
+    reload: function() {
+      this._loaded = false;
+      this._load();
+    },
+
+    /**
+     * loads value from local storage
+     * @param {boolean=} externalChange true if loading changes from a different window
+     */
+    _load: function(externalChange) {
+      try {
+        var v = window.localStorage.getItem(this.name);
+      } catch (ex) {
+        this.errorMessage = ex.message;
+
+        this._error("Could not save to localStorage.  Try enabling cookies for this page.", ex);
+      };
+
+      if (v === null) {
+        this._loaded = true;
+        this._doNotSave = true;  // guard for save watchers
+        this.value = null;
+        this._doNotSave = false;
+        this.fire('iron-localstorage-load-empty', { externalChange: externalChange});
+      } else {
+        if (!this.useRaw) {
+          try { // parse value as JSON
+            v = JSON.parse(v);
+          } catch(x) {
+            this.errorMessage = "Could not parse local storage value";
+            Polymer.Base._error("could not parse local storage value", v);
+            v = null;
+          }
+        }
+        this._loaded = true;
+        this._doNotSave = true;
+        this.value = v;
+        this._doNotSave = false;
+        this.fire('iron-localstorage-load', { externalChange: externalChange});
+      }
+    },
+
+    /**
+     * Saves the value to localStorage. Call to save if autoSaveDisabled is set.
+     * If `value` is null or undefined, deletes localStorage.
+     */
+    save: function() {
+      var v = this.useRaw ? this.value : JSON.stringify(this.value);
+      try {
+        if (this.value === null || this.value === undefined) {
+          window.localStorage.removeItem(this.name);
+        } else {
+          window.localStorage.setItem(this.name, /** @type {string} */ (v));
+        }
+      }
+      catch(ex) {
+        // Happens in Safari incognito mode,
+        this.errorMessage = ex.message;
+        Polymer.Base._error("Could not save to localStorage. Incognito mode may be blocking this action", ex);
+      }
+    }
+
+    /**
+     * Fired when value loads from localStorage.
+     *
+     * @event iron-localstorage-load
+     * @param {{externalChange:boolean}} detail -
+     *     externalChange: true if change occured in different window.
+     */
+
+    /**
+     * Fired when loaded value does not exist.
+     * Event handler can be used to initialize default value.
+     *
+     * @event iron-localstorage-load-empty
+     * @param {{externalChange:boolean}} detail -
+     *     externalChange: true if change occured in different window.
+     */
+  });
+
+</script>
 <dom-module id="mailMonitor-user-details" assetpath="/elements/">
   <template>
     <style>
@@ -42887,8 +43135,13 @@ any apps you're building. See the Google Developers Console
           width: 99.4%;
           margin-top: 20px;
           box-sizing: border-box;
-          border: ridge lightgray 5px;
+          border: solid lightgray 3px;
           background-color: inherit;
+        }
+
+        img.resize{
+            width:auto; /* you can use % */
+            height: 100px;
         }
 
         paper-radio-group {
@@ -42902,12 +43155,11 @@ any apps you're building. See the Google Developers Console
         }
         paper-input.middle {
           padding-left:15px;
-          padding-right:15px;
           float:left;
           width: 30%;
         }
         paper-input.right {
-          padding-right: 15px;
+          padding-left: 15px;
           float:left;
           width: 30%;
         }
@@ -42920,6 +43172,12 @@ any apps you're building. See the Google Developers Console
           margin: 15px;
         }
 
+        paper-button.temporary {
+          color: blue;
+          clear:both;
+          border: dotted gray 1px;
+          margin: 15px;
+        }
         paper-dropdown-menu {
           text-align: center;
           width: 30%;
@@ -42933,10 +43191,15 @@ any apps you're building. See the Google Developers Console
           padding-bottom: 15px;
         }
     </style>
-    <iron-ajax auto="" url="{{url}}" handle-as="json" last-response="{{handleResponse}}"></iron-ajax>
+    <!-- <iron-ajax auto
+          url="{{url}}"
+          handle-as="json"
+          last-response="{{handleResponse}}"></iron-ajax> -->
+    <iron-localstorage id="storage" name="consultants" value="{{handleResponse}}">
+    </iron-localstorage>
     <paper-material elevation="1">
-      <paper-card class="full" image="parcelInOffice.png">
-        <form is="iron-form" id="form" method="post" action="/edit">
+      <paper-card class="full">
+        <img src="/elements/images/parcelInOffice.png" width="100%" height="160" <form="" is="iron-form" id="form" method="post" action="/edit">
               <paper-dropdown-menu>
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
                           <template is="dom-repeat" items="{{handleResponse}}">
@@ -42968,7 +43231,7 @@ any apps you're building. See the Google Developers Console
                 <paper-input class="right" label="Home Office" value="[[homeOffice]]" disabled=""></paper-input>
             </div>
 
-        </form>
+
 
         <!-- Quick and dirty code to be refactored -->
         <template is="dom-if" if="[[_hasEmail(email)]]">
@@ -42977,6 +43240,10 @@ any apps you're building. See the Google Developers Console
         <template is="dom-if" if="[[_hasNoEmail(email)]]">
           <paper-button raised="" on-tap="send" class="custom" disabled="">Notify Owner</paper-button>
         </template>
+        <paper-button raised="" on-tap="save" class="temporary">Save</paper-button>
+        <paper-button raised="" on-tap="load" class="temporary">Load</paper-button>
+        <!-- <paper-button raised id="goFS" on-tap="goFullScreen" class="temporary">Go FS</paper-button> -->
+
         <!-- <paper-button raised on-tap="_insertRecordAndSend" class="custom"><iron-icon icon="myicons:send-mail"></iron-icon>Send An Email</paper-button> -->
 
     </paper-card>
@@ -43009,7 +43276,6 @@ any apps you're building. See the Google Developers Console
           </iron-data-table>
       </template>
     </div> -->
-
 </paper-material></template>
   <script>
     (function(Polymer) {
@@ -43018,6 +43284,7 @@ any apps you're building. See the Google Developers Console
       Polymer({
         is: 'mailMonitor-user-details',
         properties: {
+          handleResponse: {type:Array, notify:true },
           name: {type:String, notify:true, value: ''},
           selection: {type:String, notify:true},
           email: {type: String, notify: true, computed: '_generateEmail(selection)'},
@@ -43046,9 +43313,31 @@ any apps you're building. See the Google Developers Console
         },
         observers: [
           '_debug(size)',
-          '_debug(user)',
+          // '_generateUserData(handleResponse)',
           // '_nameChanged(name)',
         ],
+        // goFullScreen: function() {
+        //   var goFS = document.getElementById("goFS");
+        //   goFS.addEventListener("click", function() {
+        //       document.documentElement.requestFullscreen();
+        //   }, false);
+        // },
+        save : function() {
+          this.$.storage.save();
+        },
+        load : function() {
+          this.$.storage.reload();
+        },
+        _generateUserData: function(handleResponse) {
+          // console.log('RESPONSE DATA: ', handleResponse);
+          const userData = handleResponse.map(item => ({
+              loginName:item.loginName,
+              preferredName: item.preferredName,
+              workingOffice: item.workingOffice.name,
+              homeOffice: item.homeOffice.name
+            }));
+          // console.log('USER DATA: ', JSON.stringify(userData));
+        },
         _hasEmail: function(email) {
           return (email !== undefined && email !== '');
         },
@@ -43059,10 +43348,10 @@ any apps you're building. See the Google Developers Console
           return selected.loginName + '@thoughtworks.com';
         },
         _getWorkingOffice: function(selected) {
-          return selected.workingOffice.name;
+          return selected.workingOffice;
         },
         _getHomeOffice: function(selected) {
-          return selected.homeOffice.name;
+          return selected.homeOffice;
         },
         _isParcel: function(type) {
           return (type === 'parcel');
@@ -43077,7 +43366,7 @@ any apps you're building. See the Google Developers Console
         },
         _computeUrl: function(office){
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
-          return ['./aus_',office,'_consultants.json'].join('');
+          return ['./aus_',office,'_consultants_trun.json'].join('');
         },
         send: function() {
           this.$.send.generateRequest();
@@ -43093,6 +43382,8 @@ any apps you're building. See the Google Developers Console
           body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to Melbourne TW office\n\n";
           body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";
           body += "===TRIAL APP - Letter & Parcel DELIVERY MESSENGER===\n";
+          body += "\n\n";
+          body += "This email address is unattended, please do not reply. \n";
           body += "Any suggestions please respond to Mads(PO)/Cathy, thanks all\n";
           console.log('------ EMAIL BODY: ', body);
           return body;
@@ -43140,6 +43431,10 @@ any apps you're building. See the Google Developers Console
         },
         debug: function(object) {
           console.log('DEBUG CMM-EMAILER: '. object);
+        },
+        ready: function() {
+          console.log('Element mailMonitor-user-details has been created.');
+          this.load();
         }
       });
 

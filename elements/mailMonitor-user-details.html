@@ -32,8 +32,13 @@
           width: 99.4%;
           margin-top: 20px;
           box-sizing: border-box;
-          border: ridge lightgray 5px;
+          border: solid lightgray 3px;
           background-color: inherit;
+        }
+
+        img.resize{
+            width:auto; /* you can use % */
+            height: 100px;
         }
 
         paper-radio-group {
@@ -47,12 +52,11 @@
         }
         paper-input.middle {
           padding-left:15px;
-          padding-right:15px;
           float:left;
           width: 30%;
         }
         paper-input.right {
-          padding-right: 15px;
+          padding-left: 15px;
           float:left;
           width: 30%;
         }
@@ -65,6 +69,12 @@
           margin: 15px;
         }
 
+        paper-button.temporary {
+          color: blue;
+          clear:both;
+          border: dotted gray 1px;
+          margin: 15px;
+        }
         paper-dropdown-menu {
           text-align: center;
           width: 30%;
@@ -78,12 +88,17 @@
           padding-bottom: 15px;
         }
     </style>
-    <iron-ajax auto
+    <!-- <iron-ajax auto
           url="{{url}}"
           handle-as="json"
-          last-response="{{handleResponse}}"></iron-ajax>
+          last-response="{{handleResponse}}"></iron-ajax> -->
+    <iron-localstorage id="storage"
+        name="consultants"
+        value="{{handleResponse}}">
+    </iron-localstorage>
     <paper-material elevation="1">
-      <paper-card class="full" image="/elements/images/parcelInOffice.png">
+      <paper-card class="full">
+        <img src="/elements/images/parcelInOffice.png"  width=100% height="160"
         <form is="iron-form" id="form" method="post" action="/edit">
               <paper-dropdown-menu>
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
@@ -125,6 +140,10 @@
         <template is="dom-if" if="[[_hasNoEmail(email)]]">
           <paper-button raised on-tap="send" class="custom" disabled>Notify Owner</paper-button>
         </template>
+        <paper-button raised on-tap="save" class="temporary">Save</paper-button>
+        <paper-button raised on-tap="load" class="temporary">Load</paper-button>
+        <!-- <paper-button raised id="goFS" on-tap="goFullScreen" class="temporary">Go FS</paper-button> -->
+
         <!-- <paper-button raised on-tap="_insertRecordAndSend" class="custom"><iron-icon icon="myicons:send-mail"></iron-icon>Send An Email</paper-button> -->
 
     </paper-card>
@@ -169,7 +188,6 @@
           </iron-data-table>
       </template>
     </div> -->
-
 </template>
   <script>
     (function(Polymer) {
@@ -178,6 +196,7 @@
       Polymer({
         is: 'mailMonitor-user-details',
         properties: {
+          handleResponse: {type:Array, notify:true },
           name: {type:String, notify:true, value: ''},
           selection: {type:String, notify:true},
           email: {type: String, notify: true, computed: '_generateEmail(selection)'},
@@ -206,9 +225,31 @@
         },
         observers: [
           '_debug(size)',
-          '_debug(user)',
+          // '_generateUserData(handleResponse)',
           // '_nameChanged(name)',
         ],
+        // goFullScreen: function() {
+        //   var goFS = document.getElementById("goFS");
+        //   goFS.addEventListener("click", function() {
+        //       document.documentElement.requestFullscreen();
+        //   }, false);
+        // },
+        save : function() {
+          this.$.storage.save();
+        },
+        load : function() {
+          this.$.storage.reload();
+        },
+        _generateUserData: function(handleResponse) {
+          // console.log('RESPONSE DATA: ', handleResponse);
+          const userData = handleResponse.map(item => ({
+              loginName:item.loginName,
+              preferredName: item.preferredName,
+              workingOffice: item.workingOffice.name,
+              homeOffice: item.homeOffice.name
+            }));
+          // console.log('USER DATA: ', JSON.stringify(userData));
+        },
         _hasEmail: function(email) {
           return (email !== undefined && email !== '');
         },
@@ -219,10 +260,10 @@
           return selected.loginName + '@thoughtworks.com';
         },
         _getWorkingOffice: function(selected) {
-          return selected.workingOffice.name;
+          return selected.workingOffice;
         },
         _getHomeOffice: function(selected) {
-          return selected.homeOffice.name;
+          return selected.homeOffice;
         },
         _isParcel: function(type) {
           return (type === 'parcel');
@@ -237,7 +278,7 @@
         },
         _computeUrl: function(office){
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
-          return ['./aus_',office,'_consultants.json'].join('');
+          return ['./aus_',office,'_consultants_trun.json'].join('');
         },
         send: function() {
           this.$.send.generateRequest();
@@ -253,6 +294,8 @@
           body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to Melbourne TW office\n\n";
           body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";
           body += "===TRIAL APP - Letter & Parcel DELIVERY MESSENGER===\n";
+          body += "\n\n";
+          body += "This email address is unattended, please do not reply. \n";
           body += "Any suggestions please respond to Mads(PO)/Cathy, thanks all\n";
           console.log('------ EMAIL BODY: ', body);
           return body;
@@ -300,6 +343,10 @@
         },
         debug: function(object) {
           console.log('DEBUG CMM-EMAILER: '. object);
+        },
+        ready: function() {
+          console.log('Element mailMonitor-user-details has been created.');
+          this.load();
         }
       });
 
