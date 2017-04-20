@@ -43110,15 +43110,36 @@ is resolved. Local storage will be blown away.
         color: white;
         box-sizing: border-box;
       }
-
+      /*div.crop {
+          position: relative;
+          float: right;
+          height: 150px;
+          overflow: hidden;
+      }
+      div.text-on-image {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        font-weight: bold;
+        color: #ffffff;
+      }*/
+      .float-text {
+        padding: 2px;
+        color: blue;
+        height: 150px;
+        background-image:url(./parcelInOffice.png);
+      }
+      h2 {
+        position: absolute;
+        right: 150px;
+        top: 100px;
+      }
       div {
         padding: 2px;
       }
-
-      div.paper-radio-group {
+      .paper-radio-group {
         padding: 15px;
       }
-
     </style>
     <style is="custom-style">
       :root {
@@ -43130,24 +43151,15 @@ is resolved. Local storage will be blown away.
         --paper-radio-button-unchecked-color: white;
         --paper-radio-button-label-color: white;
         }
-
         paper-card.full {
           width: 99.4%;
           margin-top: 20px;
           box-sizing: border-box;
-          border: solid lightgray 3px;
           background-color: inherit;
         }
-
-        img.resize{
-            width:auto; /* you can use % */
-            height: 100px;
-        }
-
         paper-radio-group {
           border: dotted white 1px;
         }
-
         paper-input.left {
           padding-left:15px;
           float: left;
@@ -43163,7 +43175,6 @@ is resolved. Local storage will be blown away.
           float:left;
           width: 30%;
         }
-
         paper-button.custom {
           color: white;
           clear:both;
@@ -43171,7 +43182,6 @@ is resolved. Local storage will be blown away.
           border: solid gray 1px;
           margin: 15px;
         }
-
         paper-button.temporary {
           color: blue;
           clear:both;
@@ -43183,7 +43193,6 @@ is resolved. Local storage will be blown away.
           width: 30%;
           padding-left: 15px;
         }
-
         google-signin {
           padding: 15px;
           float: right;
@@ -43195,17 +43204,18 @@ is resolved. Local storage will be blown away.
     <iron-localstorage id="storage" name="consultants" value="{{handleResponse}}">
     </iron-localstorage>
     <paper-material elevation="1">
+      <div class="float-text"><h2>= PLEASE PICK ME UP =</h2></div>
       <paper-card class="full">
-        <img src="./parcelInOffice.png" width="100%" height="160" <form="" is="iron-form" id="form" method="post" action="/edit">
-              <paper-dropdown-menu>
-                  <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
-                          <template is="dom-repeat" items="{{handleResponse}}">
-                            <paper-item value="{{item}}">
-                              [[item.preferredName]]
-                            </paper-item>
-                          </template>
-                  </paper-menu>
-              </paper-dropdown-menu>
+        <form="" is="iron-form" id="form" method="post" action="/edit">
+        <paper-dropdown-menu>
+          <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+                  <template is="dom-repeat" items="{{handleResponse}}">
+                    <paper-item value="{{item}}">
+                      [[item.preferredName]]
+                    </paper-item>
+                  </template>
+          </paper-menu>
+        </paper-dropdown-menu>
               <iron-label><iron-icon icon="myicons:arrow-back"></iron-icon>recipient's name on the delivery</iron-label>
               <div class="paper-radio-group">
                 <paper-radio-group selected="{{type}}">
