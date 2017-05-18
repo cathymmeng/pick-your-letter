@@ -102,7 +102,7 @@
       <paper-card class="full">
         <form is="iron-form" id="form" method="post" action="/edit">
               <paper-dropdown-menu class="short" id="office" label="Office">
-                <paper-listbox class="dropdown-content" selected="0">
+                <paper-listbox class="dropdown-content" selected="{{selectedOffice}}">
                   <template is="dom-repeat" items={{officeList}}>
                     <paper-item value={{item}}>
                       [[item]]
@@ -216,9 +216,11 @@
           user: {type: Object, notify: true },
           accessToken: { type:String, notify:true },
           scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
-          office: {type: String, notify: true, computed: '_getOfficeName(selection)'},
-          url: {computed: '_computeUrl(office)'},
-          officeList: {type: Array, notify: true, value: ['melbourne', 'sydney']}
+          officeList: {type: Array, notify: true, value: ['melbourne', 'sydney']},
+          selectedOffice: { type:String, notify:true},
+          office: {type: String, notify: true, computed: '_getOfficeName(selectedOffice)'},
+          url: {computed: '_computeUrl(office)'}
+
 
           // newRecord: {
           //   type: Object,
@@ -246,8 +248,8 @@
         //       document.documentElement.requestFullscreen();
         //   }, false);
         // },
-        _getOfficeName: function(selection) {
-          return this.officeList[selection];
+        _getOfficeName: function(selectedOffice) {
+          return this.officeList[selectedOffice];
         },
         save : function() {
           this.$.storage.save();
@@ -292,8 +294,11 @@
           console.log(object);
         },
         _computeUrl: function(office){
+          console.log('Office selected is: ', office);
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
           return ['./aus_',office,'_consultants_trun.json'].join('');
+          console.log('File loading');
+
         },
         send: function() {
           this.$.send.generateRequest();
