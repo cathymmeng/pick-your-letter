@@ -77,6 +77,11 @@
         width: 30%;
         padding-left: 15px;
       }
+      paper-dropdown-menu.short {
+      text-align: center;
+      width: 15%;
+      padding-left: 15px;
+      }
       google-signin {
         padding: 15px;
         float: right;
@@ -96,7 +101,16 @@
       <div class="float-text"><h2>= PLEASE PICK ME UP =</h2></div>
       <paper-card class="full">
         <form is="iron-form" id="form" method="post" action="/edit">
-              <paper-dropdown-menu>
+              <paper-dropdown-menu class="short" id="office" label="Office">
+                <paper-listbox class="dropdown-content" selected="0">
+                  <template is="dom-repeat" items={{officeList}}>
+                    <paper-item value={{item}}>
+                      [[item]]
+                    </paper-item>
+                 </template>
+                </paper-listbox>
+              </paper-dropdown-menu>
+              <paper-dropdown-menu label="Receipient">
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
                           <template is="dom-repeat" items="{{handleResponse}}">
                             <paper-item value={{item}}>
@@ -105,7 +119,6 @@
                           </template>
                   </paper-menu>
               </paper-dropdown-menu>
-              <iron-label><iron-icon icon="myicons:arrow-back"></iron-icon>recipient's name on the delivery</iron-label>
               <div class="paper-radio-group">
                 <paper-radio-group selected="{{type}}">
                   <paper-radio-button name="letter"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
@@ -203,8 +216,10 @@
           user: {type: Object, notify: true },
           accessToken: { type:String, notify:true },
           scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
-          office: {value: 'melbourne', notify: true},
+          office: {type: String, notify: true, computed: '_getOfficeName(selection)'},
           url: {computed: '_computeUrl(office)'},
+          officeList: {type: Array, notify: true, value: ['melbourne', 'sydney']}
+
           // newRecord: {
           //   type: Object,
           //   notify: true,
@@ -220,8 +235,9 @@
           //   }
         },
         observers: [
-          '_debug(size)',
+          '_debug(officeList)',
           // '_generateUserData(handleResponse)',
+          // '_generateBody(office)'
           // '_nameChanged(name)',
         ],
         // goFullScreen: function() {
@@ -230,6 +246,9 @@
         //       document.documentElement.requestFullscreen();
         //   }, false);
         // },
+        _getOfficeName: function(selection) {
+          return this.officeList[selection];
+        },
         save : function() {
           this.$.storage.save();
         },
@@ -287,12 +306,12 @@
         },
         _generateBody: function(email,type,size) {
           var body = "to: " + email + "\n";
-          body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to Melbourne TW office\n\n";
+          body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to " + office.value +  " TW office\n\n";
           body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";
           body += "===TRIAL APP - Letter & Parcel DELIVERY MESSENGER===\n";
           body += "\n\n";
           body += "This email address is unattended, please do not reply. \n";
-          body += "Any suggestions please respond to Mads(PO)/Cathy, thanks all\n";
+          body += "Please leave suggestions at Slack channel pick-your-letter, thanks all\n";
           console.log('------ EMAIL BODY: ', body);
           return body;
         },
@@ -342,7 +361,7 @@
         },
         ready: function() {
           console.log('Element mailMonitor-user-details has been created.');
-          this.load();
+          // this.load();
         }
       });
 
