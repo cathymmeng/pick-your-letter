@@ -98,7 +98,7 @@
         value="{{handleResponse}}">
     </iron-localstorage>
     <paper-material elevation="1">
-      <div class="float-text"><h2>= PLEASE PICK ME UP =</h2></div>
+      <div class="float-text" on-tap="goFullScreen"><h2>= PLEASE PICK ME UP =</h2></div>
       <paper-card class="full">
         <form is="iron-form" id="form" method="post" action="/edit">
               <paper-dropdown-menu class="short" id="office" label="Office">
@@ -110,7 +110,7 @@
                  </template>
                 </paper-listbox>
               </paper-dropdown-menu>
-              <paper-dropdown-menu label="Receipient">
+              <paper-dropdown-menu label="Recipient">
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
                           <template is="dom-repeat" items="{{handleResponse}}">
                             <paper-item value={{item}}>
@@ -151,11 +151,6 @@
         </template>
         <paper-button raised on-tap="save" class="temporary">Save</paper-button>
         <paper-button raised on-tap="load" class="temporary">Load</paper-button>
-        <!-- <paper-button raised id="goFS" on-tap="goFullScreen" class="temporary">Go FS</paper-button> -->
-
-        <!-- <paper-button raised on-tap="_insertRecordAndSend" class="custom"><iron-icon icon="myicons:send-mail"></iron-icon>Send An Email</paper-button> -->
-
-    </paper-card>
 
     <iron-ajax id="send"
           method="POST" url="https://www.googleapis.com/upload/gmail/v1/users/[[user.id]]/messages/send"
@@ -174,29 +169,6 @@
           on-google-signin-aware-success="_handleSignin"
           on-google-signin-offline-success="_handleOffline"
           on-google-signin-aware-error="_signInError"></google-signin-aware>
-
-    <!-- <div>
-      <template is="dom-bind">
-        <iron-ajax url="../currentInventory.json" last-response="{{data}}" auto></iron-ajax>
-          <iron-data-table items="[[data]]">
-            <data-table-column name="Receipient">
-              <template>[[item.receipient]]</template>
-            </data-table-column>
-            <data-table-column name="Date of Delivery">
-              <template>[[item.dateOfDelivery]]</template>
-            </data-table-column>
-            <data-table-column name="Type">
-              <template>[[item.item.type]]</template>
-            </data-table-column>
-            <data-table-column name="Size">
-              <template>[[item.item.size]]</template>
-            </data-table-column>
-            <data-table-column name="Status">
-              <template>[[item.status]]</template>
-            </data-table-column>
-          </iron-data-table>
-      </template>
-    </div> -->
 </template>
   <script>
     (function(Polymer) {
@@ -216,11 +188,10 @@
           user: {type: Object, notify: true },
           accessToken: { type:String, notify:true },
           scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
-          officeList: {type: Array, notify: true, value: ['melbourne', 'sydney']},
+          officeList: {type: Array, notify: true, value: ['Melbourne', 'Sydney']},
           selectedOffice: { type:String, notify:true},
           office: {type: String, notify: true, computed: '_getOfficeName(selectedOffice)'},
           url: {computed: '_computeUrl(office)'}
-
 
           // newRecord: {
           //   type: Object,
@@ -242,12 +213,6 @@
           // '_generateBody(office)'
           // '_nameChanged(name)',
         ],
-        // goFullScreen: function() {
-        //   var goFS = document.getElementById("goFS");
-        //   goFS.addEventListener("click", function() {
-        //       document.documentElement.requestFullscreen();
-        //   }, false);
-        // },
         _getOfficeName: function(selectedOffice) {
           return this.officeList[selectedOffice];
         },
@@ -256,6 +221,18 @@
         },
         load : function() {
           this.$.storage.reload();
+        },
+        goFullScreen: function(){
+          var element = document.body; // Make the body go full screen.
+          var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+          if (requestMethod) { // Native full screen.
+              requestMethod.call(element);
+          } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+              var wscript = new ActiveXObject("WScript.Shell");
+              if (wscript !== null) {
+                  wscript.SendKeys("{F11}");
+              }
+          };
         },
         _generateUserData: function(handleResponse) {
           // console.log('RESPONSE DATA: ', handleResponse);
@@ -285,18 +262,13 @@
         _isParcel: function(type) {
           return (type === 'parcel');
         },
-        // _nameChanged: function(name) {
-        //   if (name !== undefined) {
-        //     this.email = name2email(name);
-        //   }
-        // },
         _debug: function(object) {
           console.log(object);
         },
         _computeUrl: function(office){
           console.log('Office selected is: ', office);
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
-          return ['./aus_',office,'_consultants_trun.json'].join('');
+          return ['./aus_',office.toLowerCase(),'_consultants_trun.json'].join('');
           console.log('File loading');
 
         },
@@ -369,19 +341,6 @@
           // this.load();
         }
       });
-
-      function name2email(name) {
-        if (name.trim().length == 0) { return '';
-        } else {
-          var parts = name.replace(' +',' ').split(' ');
-          var email = parts[0];
-          if (parts.length > 1 && parts[1].length > 0) {
-            email += '.' + parts[parts.length - 1].trim();
-          } else if (parts[0].trim().length > 0){
-            email = email + '@thoughtworks.com';
-          }
-        } return email;
-      };
 })(window.Polymer);
 </script>
 </dom-module>
