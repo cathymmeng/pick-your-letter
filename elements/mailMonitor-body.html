@@ -111,7 +111,7 @@
                 </paper-listbox>
               </paper-dropdown-menu>
 <paper-dropdown-menu label="Recipient">
-                  <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+                  <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{recipient}}">
                           <template is="dom-repeat" items="{{handleResponse}}">
                             <paper-item value={{item}}>
                               [[item.preferredName]]
@@ -193,10 +193,10 @@
         properties: {
           handleResponse: {type:Array, notify:true },
           name: {type:String, notify:true, value: ''},
-          selection: {type:String, notify:true},
-          email: {type: String, notify: true, computed: '_generateEmail(selection)'},
-          workingOffice: {type: String, notify: true, computed: '_getWorkingOffice(selection)'},
-          homeOffice: {type: String, notify: true, computed: '_getHomeOffice(selection)'},
+          recipient: {type:String, notify:true},
+          email: {type: String, notify: true, computed: '_generateEmail(recipient)'},
+          workingOffice: {type: String, notify: true, computed: '_getWorkingOffice(recipient)'},
+          homeOffice: {type: String, notify: true, computed: '_getHomeOffice(recipient)'},
           size: {type: String, notify: true, value: ''},
           type: {type: String, notify: true, value: 'letter'},
           user: {type: Object, notify: true },
@@ -209,7 +209,7 @@
         },
         observers: [
           '_debug(officeList)',
-          // '_generateUserData(handleResponse)',
+          '_generateUserData(handleResponse)',
           // '_generateBody(office)'
           // '_nameChanged(name)',
         ],
@@ -269,7 +269,6 @@
           console.log('Office selected is: ', office);
           // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
           return ['./aus_',office.toLowerCase(),'_consultants_trun.json'].join('');
-          console.log('File loading');
 
         },
         send: function() {
