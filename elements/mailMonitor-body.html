@@ -110,7 +110,7 @@
                  </template>
                 </paper-listbox>
               </paper-dropdown-menu>
-              <paper-dropdown-menu label="Recipient">
+<paper-dropdown-menu label="Recipient">
                   <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
                           <template is="dom-repeat" items="{{handleResponse}}">
                             <paper-item value={{item}}>
@@ -118,7 +118,21 @@
                             </paper-item>
                           </template>
                   </paper-menu>
-              </paper-dropdown-menu>
+</paper-dropdown-menu>
+
+<!-- <paper-dropdown-menu label="Experiment">
+                <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
+                  <paper-dropdown-input items='[[handleResponse]]'
+                                        filter-property="preferredName">
+                        <template is="dom-repeat" items="{{handleResponse}}">
+                          <paper-item value={{item}}>
+                            [[item.preferredName]]
+                          </paper-item>
+                        </template>
+                  </paper-dropdown-input>
+                </paper-menu>
+</paper-dropdown-menu> -->
+
               <div class="paper-radio-group">
                 <paper-radio-group selected="{{type}}">
                   <paper-radio-button name="letter"><iron-icon icon="myicons:email"></iron-icon>Letter</paper-radio-button>
@@ -192,20 +206,6 @@
           selectedOffice: { type:String, notify:true},
           office: {type: String, notify: true, computed: '_getOfficeName(selectedOffice)'},
           url: {computed: '_computeUrl(office)'}
-
-          // newRecord: {
-          //   type: Object,
-          //   notify: true,
-          //   value:   {
-          //       "receipient": "",
-          //       "dateOfDelivery": "",
-          //       "item": {
-          //         "type": "",
-          //         "size": ""
-          //       },
-          //       "status": "Notified"
-          //     }
-          //   }
         },
         observers: [
           '_debug(officeList)',
