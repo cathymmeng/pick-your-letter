@@ -1,7 +1,5 @@
 /bower_components/
-/elements/images/
-/elements/email-from-json.html
-/elements/cmm-emailer.html
+/elements/
 aus_melbourne_consultants.json
 aus_sydney_consultants.json
 aus_melbourne_consultants_trun.json
