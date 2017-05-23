@@ -1,8 +1,6 @@
 /bower_components/
 /elements/images/
+/elements/email-from-json.html
+/elements/cmm-emailer.html
 aus_melbourne_consultants.json
 aus_sydney_consultants.json
-/elements/email-from-json-backup.html
-/elements/email-from-json.html
-/elements/mailMonitor-user-details-backup.html
-/elements/cmm-emailer.html
