@@ -117,13 +117,13 @@
               </paper-dropdown-menu>
 
               <paper-dropdown-menu label="Recipient">
-                                <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{recipient}}">
-                                        <template is="dom-repeat" items="{{handleResponse}}">
-                                          <paper-item value={{item}}>
-                                            [[item.preferredName]]
-                                          </paper-item>
-                                        </template>
-                                </paper-menu>
+                <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{recipient}}">
+                  <template is="dom-repeat" items="{{handleResponse}}">
+                      <paper-item value={{item}}>
+                        [[item.preferredName]]
+                      </paper-item>
+                  </template>
+                </paper-menu>
               </paper-dropdown-menu>
 
 <!-- <template is="dom-bind">
