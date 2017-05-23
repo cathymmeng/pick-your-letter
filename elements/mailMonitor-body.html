@@ -77,6 +77,11 @@
         width: 30%;
         padding-left: 15px;
       }
+      vaadin-combo-box{
+        text-align: center;
+        width: 30%;
+        padding-left: 15px;
+      }
       paper-dropdown-menu.short {
       text-align: center;
       width: 15%;
@@ -110,28 +115,28 @@
                  </template>
                 </paper-listbox>
               </paper-dropdown-menu>
-<paper-dropdown-menu label="Recipient">
-                  <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{recipient}}">
-                          <template is="dom-repeat" items="{{handleResponse}}">
-                            <paper-item value={{item}}>
-                              [[item.preferredName]]
-                            </paper-item>
-                          </template>
-                  </paper-menu>
-</paper-dropdown-menu>
 
-<!-- <paper-dropdown-menu label="Experiment">
-                <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{selection}}">
-                  <paper-dropdown-input items='[[handleResponse]]'
-                                        filter-property="preferredName">
-                        <template is="dom-repeat" items="{{handleResponse}}">
-                          <paper-item value={{item}}>
-                            [[item.preferredName]]
-                          </paper-item>
-                        </template>
-                  </paper-dropdown-input>
-                </paper-menu>
-</paper-dropdown-menu> -->
+              <paper-dropdown-menu label="Recipient">
+                                <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{recipient}}">
+                                        <template is="dom-repeat" items="{{handleResponse}}">
+                                          <paper-item value={{item}}>
+                                            [[item.preferredName]]
+                                          </paper-item>
+                                        </template>
+                                </paper-menu>
+              </paper-dropdown-menu>
+
+<!-- <template is="dom-bind">
+  <iron-ajax auto
+        url="{{url}}"
+        handle-as="json"
+        last-response="{{handleResponse}}"></iron-ajax>
+  <vaadin-combo-box items="[[handleResponse]]">
+    <template value={{item}}>
+      [[item.preferredName]]
+    </template>
+  </vaadin-combo-box>
+</template> -->
 
               <div class="paper-radio-group">
                 <paper-radio-group selected="{{type}}">
@@ -208,8 +213,8 @@
           url: {computed: '_computeUrl(office)'}
         },
         observers: [
-          '_debug(officeList)',
-          '_generateUserData(handleResponse)',
+          '_debug(officeList,handleResponse)',
+          // '_generateUserData(handleResponse)',
           // '_generateBody(office)'
           // '_nameChanged(name)',
         ],
@@ -242,7 +247,7 @@
               workingOffice: item.workingOffice.name,
               homeOffice: item.homeOffice.name
             }));
-          // console.log('USER DATA: ', JSON.stringify(userData));
+          console.log('USER DATA: ', JSON.stringify(userData));
         },
         _hasEmail: function(email) {
           return (email !== undefined && email !== '');
@@ -287,7 +292,7 @@
           body += "===TRIAL APP - Letter & Parcel DELIVERY MESSENGER===\n";
           body += "\n\n";
           body += "This email address is unattended, please do not reply. \n";
-          body += "Please leave suggestions at Slack channel pick-your-letter, thanks all\n";
+          body += "Any suggestions please join Slack channel pick-your-letter, thank you.\n";
           console.log('------ EMAIL BODY: ', body);
           return body;
         },
