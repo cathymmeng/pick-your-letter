@@ -43419,7 +43419,9 @@ is resolved. Local storage will be blown away.
 
         <!-- Quick and dirty code to be refactored -->
         <template is="dom-if" if="[[_hasEmail(email)]]">
-          <paper-button raised="" on-tap="send" class="custom">Notify Owner</paper-button>
+          <!-- <paper-button raised="" on-tap="send" class="custom">Notify Owner</paper-button> -->
+          <paper-button raised onclick="toast.open()" on-tap="send" class="custom">Notify Owner</paper-button>
+          <paper-toast id="toast" text="An email is on its way now ..."></paper-toast>
         </template>
         <template is="dom-if" if="[[_hasNoEmail(email)]]">
           <paper-button raised="" on-tap="send" class="custom" disabled="">Notify Owner</paper-button>
