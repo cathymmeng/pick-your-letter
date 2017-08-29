@@ -43426,8 +43426,8 @@ is resolved. Local storage will be blown away.
         <template is="dom-if" if="[[_hasNoEmail(email)]]">
           <paper-button raised="" on-tap="send" class="custom" disabled="">Notify Owner</paper-button>
         </template>
-        <!-- <paper-button raised="" on-tap="save" class="temporary">Save</paper-button>
-        <paper-button raised="" on-tap="load" class="temporary">Load</paper-button> -->
+        <paper-button raised="" on-tap="save" class="temporary">Save</paper-button>
+        <paper-button raised="" on-tap="load" class="temporary">Load</paper-button>
     </paper-card>
 
     <iron-ajax id="send" method="POST" url="https://www.googleapis.com/upload/gmail/v1/users/[[user.id]]/messages/send" content-type="message/rfc822" headers="[[_computeHeader(accessToken)]]" body="[[_generateBody(email,type,size)]]" on-response="_sendEmailResponse"></iron-ajax>
@@ -43454,7 +43454,7 @@ is resolved. Local storage will be blown away.
           user: {type: Object, notify: true },
           accessToken: { type:String, notify:true },
           scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
-          officeList: {type: Array, notify: true, value: ['Melbourne', 'Sydney']},
+          officeList: {type: Array, notify: true, value: ['Melbourne']},
           selectedOffice: { type:String, notify:true},
           office: {type: String, notify: true, computed: '_getOfficeName(selectedOffice)'},
           url: {computed: '_computeUrl(office)'}
