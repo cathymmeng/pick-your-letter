@@ -43506,10 +43506,10 @@ is resolved. Local storage will be blown away.
           return selected.loginName + '@thoughtworks.com';
         },
         _getWorkingOffice: function(selected) {
-          return selected.workingOffice;
+          return selected.workingOffice.name;
         },
         _getHomeOffice: function(selected) {
-          return selected.homeOffice;
+          return selected.homeOffice.name;
         },
         _isParcel: function(type) {
           return (type === 'parcel');
