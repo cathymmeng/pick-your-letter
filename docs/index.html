@@ -43491,8 +43491,8 @@ is resolved. Local storage will be blown away.
           const userData = handleResponse.map(item => ({
               loginName:item.loginName,
               preferredName: item.preferredName,
-              workingOffice: item.workingOffice.name,
-              homeOffice: item.homeOffice.name
+              workingOffice: item.workingOffice,
+              homeOffice: item.homeOffice
             }));
           console.log('USER DATA: ', JSON.stringify(userData));
         },
