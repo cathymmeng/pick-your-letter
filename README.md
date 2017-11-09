@@ -40,13 +40,23 @@ bower update
 [Polymer]: https://www.polymer-project.org/
 [Vulcanize]: https://www.polymer-project.org/1.0/docs/tools/optimize-for-production
 
-## Development
+## Running
 
 ```
 polymer serve --open
 ```
 
 Your browser will open the page - but to log in to Google, you will need to change the URL to `localhost` instead of `127.0.0.1`. For example: http://localhost:8080/components/pick-your-letter/
+
+The contact list is not stored on the server. Ideally it would be loaded securely from a Web API, but for now you must supply it using local storage.
+
+ 1. Format your contact list as JSON using `example.json` as a template.
+ 2. Open the app in Chrome.
+ 3. Open Chrome Dev Tools, and go to _Application > Local Storage > [app URL]_.
+ 4. Add an entry with a key of `consultants` and value of the JSON you created in step 1.
+ 5. Add an entry with a key of `office` and value of the office you are setting this up for, e.g. `"Timbuktu"`.
+
+Now when you tap the drop-down list, your contact list should be shown.
 
 
 ## Deployment
@@ -60,3 +70,13 @@ Run:
 The script runs Vulcanize to compile the web page, and then does some monkey-patching to tidy it up :)
 
 After pushing the code to Github, the app is available at https://cathymmeng.github.io/pick-your-letter/
+
+ 1. Open that page on the Android tablet.
+ 2. (optional) [Add the page as an app on the home screen][add-home], and open it from there.
+ 3. Plug the laptop into your computer with a USB cable.
+ 4. Open Chrome Dev Tools on your computer, and [start a remote debugging session][remote-debug] with the tablet (yes really).
+ 5. Follow the instructions above to set values for `consultants` and `office` in local storage.
+
+
+[add-home]: https://developer.chrome.com/multidevice/android/installtohomescreen
+[remote-debug]: https://developers.google.com/web/tools/chrome-devtools/remote-debugging/

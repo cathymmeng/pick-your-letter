@@ -94,28 +94,18 @@
         padding-bottom: 15px;
       }
   </style>
-    <iron-ajax auto
-          url="{{url}}"
-          handle-as="json"
-          last-response="{{handleResponse}}"></iron-ajax>
     <iron-localstorage id="storage"
         name="consultants"
         value="{{handleResponse}}">
     </iron-localstorage>
+    <iron-localstorage id="officeStorage"
+        name="office"
+        value="{{office}}">
+    </iron-localstorage>
     <paper-material elevation="1">
-      <div class="float-text" on-tap="goFullScreen"><h2>= PLEASE PICK ME UP =</h2></div>
+      <div class="float-text" on-tap="goFullScreen"><h2>= {{office}} =</h2></div>
       <paper-card class="full">
         <form is="iron-form" id="form" method="post" action="/edit">
-              <paper-dropdown-menu class="short" id="office" label="Office">
-                <paper-listbox class="dropdown-content" selected="{{selectedOffice}}">
-                  <template is="dom-repeat" items={{officeList}}>
-                    <paper-item value={{item}}>
-                      [[item]]
-                    </paper-item>
-                 </template>
-                </paper-listbox>
-              </paper-dropdown-menu>
-
               <paper-dropdown-menu label="Recipient">
                 <paper-menu class="dropdown-content" attr-for-selected="value" selected="{{recipient}}">
                   <template is="dom-repeat" items="{{handleResponse}}">
@@ -168,14 +158,12 @@
         <template is="dom-if" if="[[_hasNoEmail(email)]]">
           <paper-button raised on-tap="send" class="custom" disabled>Notify Owner</paper-button>
         </template>
-        <paper-button raised on-tap="save" class="temporary">Save</paper-button>
-        <paper-button raised on-tap="load" class="temporary">Load</paper-button>
 
     <iron-ajax id="send"
           method="POST" url="https://www.googleapis.com/upload/gmail/v1/users/[[user.id]]/messages/send"
           content-type="message/rfc822"
           headers="[[_computeHeader(accessToken)]]"
-          body="[[_generateBody(email,type,size)]]"
+          body="[[_generateBody(office,email,type,size)]]"
           on-response="_sendEmailResponse"></iron-ajax>
 
     <google-signin id="login" label-signin="Sign In"
@@ -207,26 +195,16 @@
           user: {type: Object, notify: true },
           accessToken: { type:String, notify:true },
           scopes: { type: String, notify: true, value: 'https://www.googleapis.com/auth/gmail.send' },
-          officeList: {type: Array, notify: true, value: ['Melbourne', 'Sydney']},
           selectedOffice: { type:String, notify:true},
-          office: {type: String, notify: true, computed: '_getOfficeName(selectedOffice)'},
-          url: {computed: '_computeUrl(office)'}
+          office: {type: String, notify: true},
+          headers: {computed: '_computeHeader(accessToken)'}
         },
         observers: [
-          '_debug(officeList,handleResponse)',
+          //'_debug(officeList,handleResponse)',
           // '_generateUserData(handleResponse)',
           // '_generateBody(office)'
           // '_nameChanged(name)',
         ],
-        _getOfficeName: function(selectedOffice) {
-          return this.officeList[selectedOffice];
-        },
-        save : function() {
-          this.$.storage.save();
-        },
-        load : function() {
-          this.$.storage.reload();
-        },
         goFullScreen: function(){
           var element = document.body; // Make the body go full screen.
           var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
@@ -270,22 +248,16 @@
         _debug: function(object) {
           console.log(object);
         },
-        _computeUrl: function(office){
-          console.log('Office selected is: ', office);
-          // return ['https://jigsaw.thoughtworks.net/api/people?staffing_office=', office].join('/');
-          return ['./aus_',office.toLowerCase(),'_consultants_trun.json'].join('');
-
-        },
         send: function() {
           this.$.send.generateRequest();
         },
         _computeHeader: function(accessToken) {
-          return {'Authorization': 'Bearer ' + accessToken}
+          return {'Authorization': 'Bearer ' + accessToken};
         },
         _sendEmailResponse: function(a) {
           console.log('EMAIL SENT RESPONSE: ', a);
         },
-        _generateBody: function(email,type,size) {
+        _generateBody: function(office,email,type,size) {
           var body = "to: " + email + "\n";
           body += "subject: You have a " + (size === '' ? '' : size+' sized ') + type + " delivered to " + office.value +  " TW office\n\n";
           body += "===PLEASE PICK ME UP AT YOUR NEXT VISIT===\n";

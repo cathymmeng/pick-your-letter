@@ -2,15 +2,11 @@
   "loginName": "cathy",
   "preferredName": "Cathy Meng",
   "workingOffice": "Xian",
-  "homeOffice": "Brazil",
-  "label": "aaa",
-  "value": "ddd"
+  "homeOffice": "Brazil"
 },
 {
   "loginName": "tim",
   "preferredName": "Tim Sweet",
   "workingOffice": "ohoh",
-  "homeOffice": "Australia",
-  "label": "aaa",
-  "value": "ddd"
+  "homeOffice": "Australia"
 }]
