@@ -46,7 +46,7 @@ bower update
 polymer serve --open
 ```
 
-This will open the app from default polymer url http://localhost:8080/pick-your-letter/index.html
+Your browser will open the page - but to log in to Google, you will need to change the URL to `localhost` instead of `127.0.0.1`. For example: http://localhost:8080/components/pick-your-letter/
 
 
 ## Deployment
