@@ -55,8 +55,9 @@ Run:
 
 ```
 vulcanize --inline-scripts --inline-css -p ./ index.html > docs/index.html
+perl -pe 's,/elements/images/,,g' -i docs/index.html
 ```
 
-Because of the location difference of image file and JSON, please adjust directory of files accordingly.
+The second line is required to remap images to published resources.
 
 This distills all html files into one index.html under docs for easy deployment, after push the code to Github, the app is approachable thru url https://cathymmeng.github.io/pick-your-letter/
