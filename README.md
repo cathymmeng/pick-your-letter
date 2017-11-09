@@ -72,11 +72,10 @@ The script runs Vulcanize to compile the web page, and then does some monkey-pat
 After pushing the code to Github, the app is available at https://cathymmeng.github.io/pick-your-letter/
 
  1. Open that page on the Android tablet.
- 2. (optional) [Add the page as an app on the home screen][add-home], and open it from there.
  3. Plug the laptop into your computer with a USB cable.
  4. Open Chrome Dev Tools on your computer, and [start a remote debugging session][remote-debug] with the tablet (yes really).
  5. Follow the instructions above to set values for `consultants` and `office` in local storage.
 
+When the app is running, tap the office name to make the app full-screen.
 
-[add-home]: https://developer.chrome.com/multidevice/android/installtohomescreen
 [remote-debug]: https://developers.google.com/web/tools/chrome-devtools/remote-debugging/
