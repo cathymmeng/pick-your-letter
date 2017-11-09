@@ -1,0 +1,14 @@
+{
+  "short_name": "Parcel Tracker",
+  "name": "ThoughtWorks Parcel Tracker",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/pick-your-letter/index.html",
+  "display": "standalone",
+  "orientation": "landscape"
+}

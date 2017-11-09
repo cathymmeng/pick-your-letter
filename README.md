@@ -54,10 +54,9 @@ This will open the app from default polymer url http://localhost:8080/pick-your-
 Run:
 
 ```
-vulcanize --inline-scripts --inline-css -p ./ index.html > docs/index.html
-perl -pe 's,/elements/images/,,g' -i docs/index.html
+./build.sh
 ```
 
-The second line is required to remap images to published resources.
+The script runs Vulcanize to compile the web page, and then does some monkey-patching to tidy it up :)
 
-This distills all html files into one index.html under docs for easy deployment, after push the code to Github, the app is approachable thru url https://cathymmeng.github.io/pick-your-letter/
+After pushing the code to Github, the app is available at https://cathymmeng.github.io/pick-your-letter/
