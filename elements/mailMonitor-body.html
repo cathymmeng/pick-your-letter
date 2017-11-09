@@ -314,18 +314,7 @@
           console.log('USER ID: ' + userid);
           console.log('USER EMAIL:' + user.email)
           this.set('user', user);
-
-          const self = this;
-          gapi.auth2.authorize({
-            client_id: clientId,
-            scope: self.scopes,
-            immediate: false
-          }, function(authorizationResult) {
-            if (authorizationResult && !authorizationResult.error) {
-              self.accessToken = authorizationResult.access_token;
-              // console.log('-------------- ACCESS TOKEN: ', self.accessToken);
-            }
-          });
+          this.accessToken = response.detail.access_token;
         },
         _handleSignout: function(response) {
           console.log('Signed out: ', response);
